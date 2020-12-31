@@ -1,0 +1,10 @@
+#include "object_construction.hpp"
+
+int main(){
+
+  MyClass();
+  MyClass operator= (const MyClass&);
+  MyClass(MyClass&)
+
+
+}

@@ -1,0 +1,23 @@
+#include "string.hpp"
+#include <cassert>
+#include <iostream>
+
+//===========================================================================
+int main ()
+{
+  {
+    //------------------------------------------------------
+    // SETUP FIXTURE
+    String  str("abc");
+    String str2("123");
+
+    // TEST
+    String result = str + str2;
+    std::cout << "Concat Result: " << result << std::endl;
+
+    // VERIFY
+    assert(str    == "abc");
+    assert(str2  == "123");
+    assert(result == "abc123");
+  }
+}

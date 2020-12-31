@@ -1,0 +1,17 @@
+#include "object_construction.hpp"
+
+  MyClass::MyClass(){
+    std::cout<<"This is the default constructor."<<std::endl;
+  }
+
+  MyClass& MyClass:: operator=(const MyClass& ptr2){
+    std::cout<<"This is the assignment operator."<<std::endl;
+  }
+
+  MyClass::MyClass(const MyClass& obj){
+    std::cout<<"This is the a copy constructor."<<std::endl;
+  }
+
+  MyClass::~MyClass(){
+    std::cout<<"This is the destructor."<<std::endl;
+  }

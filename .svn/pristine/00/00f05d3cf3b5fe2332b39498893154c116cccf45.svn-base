@@ -1,0 +1,23 @@
+#include "string.hpp"
+#include <cassert>
+#include <iostream>
+
+///////////////////////////////////////////////////////////////
+int main ()
+{
+  {
+    /////////////////////////////////////////////////////////
+    // SETUP FIXTURE
+
+    // TEST
+    String str("acdc");
+    String str2("kruleisgreater");
+
+    str.swap(str2);
+
+    // VERIFY
+    assert(str == "kruleisgreater");
+    assert(str2 == "acdc");
+  }
+
+}

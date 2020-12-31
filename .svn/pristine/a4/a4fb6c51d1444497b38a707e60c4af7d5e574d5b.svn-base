@@ -1,0 +1,50 @@
+#include "utilities.hpp"
+#include <iostream>
+#include <fstream>
+#include "string.hpp"
+#include "stack.hpp"
+
+int main(int argc, char*  argv[]){
+  if(argc < 2){
+    std::cout << "File to be read is needed" << std::endl;
+  }  
+
+  std::ifstream infixFile(argv[1]);
+
+  if(argc == 2){
+    String token;
+    String infix;
+    while (!infixFile.eof()){
+      infixFile >> token;
+      if(token != ";")
+	infix = infix + token + " ";
+      else{
+	std::cout << infix << std::endl;
+	String final = inToPost(infix);
+	std::cout << final << std::endl;
+	infix = "";
+      }
+    }
+  }
+  if(argc == 3){
+    std::ofstream postfixFile(argv[2]);
+    String token;
+    String infix;
+    while(!infixFile.eof()){
+      infixFile >> token;
+      if(token != ";")
+	infix = infix+token+" ";
+      else{
+	postfixFile << infix << std::endl;
+	String result = inToPost(infix);
+	postfixFile << result << std::endl;
+	infix = "";
+      }
+    }
+    postfixFile.close();
+  }
+  std::cout << "Finished" << std::endl;
+  infixFile.close();
+  return 0;
+}
+

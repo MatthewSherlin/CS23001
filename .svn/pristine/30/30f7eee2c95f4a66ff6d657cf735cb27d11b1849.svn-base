@@ -1,0 +1,19 @@
+#include "string.hpp"
+#include <cassert>
+#include <iostream>
+
+///////////////////////////////////////////////////////////////
+int main ()
+{
+  {
+    /////////////////////////////////////////////////////////
+    // SETUP FIXTURE
+
+    // TEST
+    String str2("acdc");
+
+    // VERIFY
+    assert(str2 == "acdc");
+  }
+
+}

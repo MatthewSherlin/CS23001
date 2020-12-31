@@ -1,0 +1,89 @@
+#include "utilities.hpp"
+#include <iostream>
+#include "string.hpp"
+#include "stack.hpp"
+#include <vector>
+
+String inToPost(const String& str){
+  std::vector<String> token = str.split(' ');
+  String right;
+  String left;
+  String oper;
+  stack<String> str2;
+  int i=0;
+
+  while(token[i] != ';'){
+    if(token[i] == ")"){
+      right = str2.pop();
+      oper = str2.pop();
+      left = str2.pop();
+      str2.push(left + " " + right + " " + oper);
+    }
+    else{
+      if(token[i] != "("){
+	str2.push(token[i]);
+      }   
+ }
+    i++;
+  }
+  return str2.top();
+}
+
+void toAssembly(const String& expr){
+  stack<String> result;
+  std::vector<String> tokens = expr.split(' ');
+  String left, right;
+  unsigned int loc = 0;
+  bool n[tokens.size()];
+
+  for(unsigned int i = 0; i < tokens.size(); ++i)
+    n[i] = false;
+
+  while((tokens.at(loc) != " ")&&(tokens.at(loc) != "")&&(loc < tokens.size() - 1))
+    {
+      String t = tokens.at(loc);
+      ++loc;
+      if   ((t != "*") && (t != " *") && (t != "* ") 
+	    && (t != "/") && (t != " /") && (t != "/ ") 
+	    && (t != "+") && (t != " +") && (t != "+ ")
+	    && (t != "-") && (t != " -") && (t != "- "))
+	result.push(t);
+      else{
+	right = result.pop();
+	left  = result.pop();
+	result.push(sEval(left, t, right, n));
+      }
+    }
+}
+
+String sEval(const String& lhs, const String& oper, 
+		const String& rhs, bool n[]){
+  String result, operCmd, load, store;
+  load = "LD";
+  store = "ST";
+  
+  int i = 0;
+  while(n[i]) // iterates through result to create temp strings
+    ++i;
+  
+  n[i] = true;
+
+  result = "TMP" + toString(i + 1);
+
+  if     ((oper == "+") || (oper == " +") || (oper == "+ "))
+    operCmd = "AD";
+  else if((oper == "-") || (oper == " -") || (oper == "- "))
+    operCmd = "SB";
+  else if((oper == "*") || (oper == " *") || (oper == "* "))
+    operCmd = "MU";
+  else if((oper == "/") || (oper == " /") || (oper == "/ "))
+    operCmd = "DV";
+  else
+    operCmd = "UN";
+
+  std::cout << std::setw(4) << load    << std::setw(10) << lhs    << '\n';
+  std::cout << std::setw(4) << operCmd << std::setw(10) << rhs    << '\n';
+  std::cout << std::setw(4) << store   << std::setw(10) << result << '\n';
+  
+  return result;
+}

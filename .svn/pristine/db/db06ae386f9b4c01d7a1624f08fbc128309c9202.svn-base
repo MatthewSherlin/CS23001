@@ -1,0 +1,56 @@
+#include <iostream>
+#include "../string/string.hpp"
+#include "../assembler/stack.hpp"
+#include <vector>
+#include <fstream>
+
+String inToPost(const String& str){
+  std::vector<String> token = str.split(' ');
+  String right;
+  String left;
+  String oper;
+  stack<String> str2;
+  int i=0;
+
+  while(token[i] != ';'){
+    if(token[i] == ")"){
+      right = str2.pop();
+      left = str2.pop();
+      oper = str2.pop();
+      str2.push(oper + " " + left + " " + right);
+    }
+    else{
+      if(token[i] != "("){
+        str2.push(token[i]);
+      }
+    }
+    i++;
+  }
+  return str2.top();
+}
+
+int main(int argc, char const* argv[]){
+
+  if(argc == 1)
+    std::cerr << "No file, please input file" << std::endl;
+
+  std::ifstream infixFile(argv[1]);
+
+  if(!infixFile)
+    std::cerr << "Error" << std::endl;
+  else{
+      String token;
+      String infix;
+      while (!infixFile.eof()){
+        infixFile >> token;
+        if(token != ";")
+          infix = infix + token + " ";
+        else{
+          infix=infix+";";//To make sure that the loop finishes
+          String final = inToPost(infix);
+	  std::cout << final << std::endl;
+          infix = "";
+        }
+      }
+  }
+}

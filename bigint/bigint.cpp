@@ -1,0 +1,129 @@
+#include "bigint.hpp"
+
+void bigint::init(){
+  for(int i = 0; i < CAPACITY; ++i)
+    array[i]=0;
+}
+
+bigint::bigint(){
+  init();
+}
+
+bigint::bigint(int number){
+  init();
+  for(int i = 0; i < CAPACITY; ++i){
+    array[i]=number%10;
+    number=number/10;
+  }
+}
+
+bigint::bigint(const char choice[]){
+  init();
+  int length = 0;
+  int i=0;
+  while(choice[length] != '\0')
+    ++length;
+  for(int j = (length - 1); j >=0; j--, i++)
+    array[i] = int(choice[j]) - int('0'); 
+}
+
+void bigint::debugPrint(std::ostream& out) const{
+  for(int i = CAPACITY-1; i>=0; --i)
+    out << "|" << array[i];
+  out <<std::endl;
+}
+
+std::ostream& operator<<(std::ostream& out, const bigint tmp){
+  int lineSize = CAPACITY;
+  while(lineSize > 0 && tmp.array[lineSize]==0)
+    --lineSize;
+  while(lineSize>=0){
+    if(lineSize%80)
+      out<<tmp.array[lineSize];
+    else
+      out<<tmp.array[lineSize]<<std::endl;
+    --lineSize;
+  }
+  return out;
+}
+
+bool bigint::operator==(const bigint& compare) const{
+  bool equal = true;
+  for(int i = 0; i<CAPACITY;++i){
+    if(array[i] == compare.array[i])
+      equal=true;
+    else
+      return false;
+  }
+  return equal;
+}
+
+bigint bigint::operator+(const bigint& rhs){
+  bigint final;  
+  int number = 0;
+  int sum= 0;
+for (int i = 0; i < CAPACITY ; ++i){
+  sum = array[i] + rhs.array[i]+ number;
+  if(sum>9)
+  number = 1;
+else
+  number = 0;
+  final.array[i]=sum%10;
+  }
+ return final;
+}
+
+int bigint::operator[](int i) const{
+  if((i < 0) || (i > CAPACITY))
+    return 0;
+  else
+    return array[i];
+}
+
+std::istream& operator>>(std::istream& in, bigint& tmp){
+  char newArray[CAPACITY];
+  char temp;
+  for(int i = 0; i < CAPACITY; i++)
+    newArray[i]=0;
+  in >> temp;
+  for(int x = 0; x < CAPACITY && temp != ';'; ++x){
+    newArray[x]=temp;
+    in >> temp;
+  }
+  tmp = bigint(newArray);
+  return in;
+}
+
+bigint bigint::operator*(bigint& tmp){
+  bigint product = 0;
+  for(int i = 0; i < CAPACITY; ++i)
+    product = product + (timesDigit(tmp.array[i])).times10(i);
+return product;
+}
+
+bigint bigint::timesDigit(int digit) const{
+  bigint product = *(this);
+  int remainder = 0;
+  int result = 0;
+  if(digit==0)
+    return (product = 0);
+  if(digit==1)
+    return product;
+  if(digit<= 9)
+    for(int i = 0; i < CAPACITY; ++i){
+      remainder = array[i] * digit + remainder;
+      result = remainder % 10;
+      remainder /= 10;
+      product.array[i] = result;
+    }
+  return product;
+}
+
+bigint bigint::times10(int digit) const{
+  bigint result;
+  for(int i = 0; i < digit; ++i)
+y    result.array[i]=0;
+  for (int j = digit; j < CAPACITY; ++j)
+    result.array[j] = array[j-digit];
+  return result;
+}

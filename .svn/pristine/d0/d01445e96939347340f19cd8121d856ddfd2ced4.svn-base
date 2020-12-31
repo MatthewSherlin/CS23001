@@ -1,0 +1,110 @@
+#include "utilities.hpp"
+#include <iostream>
+#include <fstream>
+#include "string.hpp"
+#include "stack.hpp"
+
+int main(int argc, char*  argv[]){ 
+ if(argc < 2){
+    std::cout << "File to be read is needed" << std::endl;
+  }
+
+ bool output_file=false;
+ std::ofstream outfile;
+  
+ if(argc > 2){
+   output_file=true;
+   outfile.open(argv[2]);
+ }
+
+  std::ifstream infixFile(argv[1]);
+
+  while(!infixFile.eof()){
+    char verifier;
+    char buffer[2000];
+    infixFile.get(verifier);
+    int counter=0;
+
+    while(counter<2000){
+      buffer[counter] = '\0';
+      counter++;
+    }
+    counter=0;
+
+    while(verifier != '\n'){
+      buffer[counter] = verifier;
+      if(verifier == ';'){
+	counter++;
+	buffer[counter]=' ';
+      }
+      infixFile.get(verifier);
+
+      counter++;
+
+    }
+
+    if(counter == 0){
+      break;
+    }
+    String aux(buffer);
+    String aux2=inToPost(aux);
+    aux[counter-1]='\0';
+
+    if(output_file==false){
+      std::cout << aux << std::endl;
+      std::cout << aux2 << std::endl;
+      std::cout << "" << std::endl;
+    }else{
+      outfile << aux << std::endl;
+      outfile << aux2 << std::endl;
+      outfile << "" << std::endl;
+    }
+
+  }
+  if(output_file){
+    outfile.close();
+  }
+
+
+  
+
+
+
+ /*
+  if(argc == 2){
+    String token;
+    String infix;
+    while (!infixFile.eof()){
+      infixFile >> token;
+      if(token != ";")
+	infix = infix + token + " ";
+      else{
+	String final = inToPost(infix);
+	std::cout << final << std::endl;
+	infix = "";
+      }
+    }
+  }
+  if(argc == 3){
+    std::ofstream postfixFile(argv[2]);
+    String token;
+    String infix;
+    while(!infixFile.eof()){
+      infixFile >> token;
+      if(token != ";")
+	infix = infix+token+" ";
+      else{
+	postfixFile << infix << std::endl;
+	String result = inToPost(infix);
+	postfixFile << result << std::endl;
+	infix = "";
+      }
+    }
+    postfixFile.close();
+  }
+*/
+  std::cout << "Finished" << std::endl;
+  infixFile.close();
+  return 0;
+}
+

@@ -1,0 +1,34 @@
+#include "utilities.hpp"
+#include <iostream>
+#include "string.hpp"
+#include "stack.hpp"
+#include <vector>
+
+String inToPost(const String& str){
+  std::vector<String> token = str.split(' ');
+  String right;
+  String left;
+  String oper;
+  stack<String> str2;
+  int i=0;
+
+  while(token[i] != ';'){
+    if(token[i] == ")"){
+      std::cout<< "here" << std::endl;
+      right = str2.pop();
+      left = str2.pop();
+      std::cout<< "here2" << std::endl;
+      oper = str2.pop();
+      str2.push(left + " " + right + " " + oper);
+    }
+    else{
+      if(token[i] != "("){
+	str2.push(token[i]);
+      std::cout<< "here3" << std::endl;
+      }   
+ }
+    i++;
+  }
+  return str2.top();
+}
+

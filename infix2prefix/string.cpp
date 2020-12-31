@@ -1,0 +1,316 @@
+#include "string.hpp"
+#include <iostream>
+#include <vector>
+
+String::String(){
+  stringSize = 1;
+  str = new char[stringSize];
+  str[0] =0;
+}
+
+String::String(char c){
+  stringSize = 2;  
+  str= new char [stringSize];
+  str[0]=c;
+  str[1]=0;
+}                
+
+String::String(const char charArray[]){
+  int i=0;
+  while(charArray[i] != '\0'){
+    ++i;
+  }
+  stringSize = i + 1;
+  str = new char[stringSize];
+  i = 0;
+  while(charArray[i] != '\0'){
+      str[i] = charArray[i];
+      ++i;
+    }
+    str[stringSize-1]=0;
+}
+
+//Copy Constructor
+String::String(const String& rhs){
+  stringSize = rhs.stringSize;
+  str = new char[stringSize];
+  for(int i = 0; i < stringSize - 1; ++i) { 
+    str[i] = rhs.str[i];
+  }
+  str[stringSize - 1] = 0;
+}       
+//Destructor
+String::~String(){
+  stringSize=0;
+  delete [] str;
+}
+
+//String(10) - capacity 10, empty string
+String::String(int cap){
+  stringSize = cap + 1;
+  str = new char [stringSize];
+  str[stringSize - 1]=0;
+}
+
+//String(10, "abc") - capacity 10 with "abc"
+String::String(int cap, const char charArray[]){
+  stringSize = cap + 1;
+  str = new char [stringSize];
+  int i = 0;
+  while(charArray[i] != '\0'){
+    str[i] = charArray[i];
+    ++i;
+  }
+}
+
+//Resets capacity to N, keeps string intact
+void String::resetCapacity(int size){
+  char tmp[size];
+  for(int i = 0; i < stringSize; ++i){ 
+    tmp[i] = str[i];
+  }
+  delete[] str;
+  stringSize = size;
+  str = new char[stringSize];
+  for(int i = 0; i < stringSize; ++i){
+    str[i] = tmp[i];
+  }
+}
+
+//Assignment
+String& String::operator=(String assign){
+  swap(assign);
+  return *this;
+}
+//Swap
+void String::swap(String& rhs){
+  //contents
+  char * tmp = str;
+  str = rhs.str;
+  rhs.str = tmp;
+  //size
+  int tmpSize = stringSize;
+  stringSize = rhs.stringSize;
+  rhs.stringSize = tmpSize;
+} 
+
+char& String::operator[](int i){
+  if(i < 0)
+    i = 0;
+  return str[i];
+}
+
+char String::operator[](int i) const{
+  return str[i];
+}
+
+int String:: capacity() const{
+  return stringSize - 1;
+}
+
+int String::length() const{
+  int i=0;
+  while(str[i] != '\0')
+    ++i;
+  return i;
+}
+
+String String::operator+(const String& rhs)  const{
+  String result(this->length()+rhs.length()+1);
+  for (int j=0; j<length(); ++j){
+    result.str[j]=str[j];
+  }
+  int len=length();
+  int i=0;
+  while((rhs.str[i]!=0) && (i + len < rhs.length()+length())){
+    result.str[len+i]=rhs.str[i];
+    ++i;
+  }
+  result.str[len +i]=0;
+  return result;
+}
+
+String& String::operator+=(const String& rhs){
+  int os = length();
+  int i = 0;
+  int capacity = stringSize;
+    
+  while(rhs.str[i] != 0){
+    if(os + i == capacity)
+      break;
+    str[os + i] = rhs.str[i];
+    ++i;
+  }
+  str[os + i] = 0;
+  return *(this);
+}
+
+bool String::operator==(const String& rhs)  const{
+  if (length() == rhs.length()) {
+    for (int i=0; str[i] != '\0' && rhs[i] != '\0'; ++i) {
+      if (str[i] != rhs[i])
+	return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+bool String::operator<(const String& rhs) const{
+  int i = 0;
+  while(str[i] != 0 && rhs.str[i] != 0 && str[i] == rhs.str[i])
+    ++i;
+  return str[i] < rhs.str[i];
+}
+
+String String::substr(int start, int end) const{
+  /////////// fix 
+  if(start < 0)
+    start = 0;
+  if(start > length())
+    start = length() - 1;
+  if(end < 0)
+    end = 0;
+  if(end > length())
+    end = length() - 1;
+  if(start > end)
+    return "";
+  String result(end-start+1);
+  int i=0;
+  for(; i <= end - start; i++){
+    result.str[i] = str[i + start];
+  }
+  result.str[i] = '\0';
+  return result;
+}
+
+int String::findch(int start, const char ch) const{
+   int i = start;
+  while ((i <= length()) && (ch != str[i]))
+    ++i;
+  if(i > length())
+    return -1;
+  else
+    return i;
+}
+
+int String::findstr(int pos,  const String& rhs) const{
+  ////// fix
+  while(pos <= length() - rhs.length()){
+    if(substr(pos, pos + rhs.length() -1) == rhs)
+      return pos;
+    ++pos;
+  }
+  return -1;
+}
+
+std::istream& operator>>(std::istream& in, String& rhs){
+    int size = 0;
+    char c[size];
+    if(!in.eof()){
+      in >> c;
+      rhs = String(c);
+      ++size;
+    }
+    else{
+      rhs = String();
+      ++size;
+    }
+    return in;
+  }
+
+ std::ostream& operator<<(std::ostream& out, const String& rhs){
+   int i = 0; 
+   while(rhs[i] != 0){
+     out << rhs.str[i];
+     ++i;
+   }
+   return out;
+ }
+
+ String operator+(const char lhs[],  const String& rhs){
+   return String(lhs) + rhs;
+ }
+ 
+ String operator+(char lhs, const String& rhs){
+   return String(lhs) + rhs;
+ }
+
+ bool operator==(const char lhs[],  const String& rhs){
+   return String(lhs) == rhs;
+ }
+
+ bool operator==(char lhs, const String& rhs){
+   return String(lhs) == rhs;
+ }
+
+ bool operator<(const char lhs[],  const String& rhs){
+   if(String(lhs) < rhs)
+     return true;
+   else
+     return false;
+ }
+
+ bool operator<(char c, const String& rhs){
+   if(String(c) < rhs)
+     return true;
+   else
+     return false;
+ }
+
+ bool operator<=(const String& lhs, const String& rhs){
+   if(((lhs < rhs) || (lhs == rhs)) && !(lhs > rhs))
+     return true;
+   else
+     return false;
+ }
+
+ bool operator!=(const String& lhs, const String& rhs){
+   if((lhs > rhs) || (lhs < rhs))
+     return true;
+   else
+     return false;
+ }
+
+ bool operator>=(const String& lhs, const String& rhs){
+   if(((lhs > rhs) || (lhs == rhs)) && !(lhs < rhs))
+     return true;
+   else
+     return false;
+ }
+
+ bool operator>(const String& lhs, const String& rhs){
+   if(!(lhs < rhs) && !(lhs == rhs))
+     return true;
+   else
+     return false;
+ }
+
+std::vector<String> String::split(const char ch) const{
+
+  std::vector<String> result;
+  char tmp[length()];
+
+  for(int i=0;i<length();i++){
+    tmp[i]=0;
+  }
+  int cnt=0;
+
+  for(int i = 0; i < length(); ++i) {
+    if(ch==str[i]){
+      result.push_back(tmp);
+      for(int ii=0;ii<length();ii++){
+	tmp[ii]=0;
+      }
+      cnt=0;
+
+    }else{
+      tmp[cnt]=str[i];
+      cnt++;
+    }
+
+  }
+  result.push_back(tmp);
+
+  return result;
+}

@@ -1,0 +1,11 @@
+#ifndef UTILITIES_HPP
+#define UTILITIES_HPP
+
+#include <iostream>
+#include <fstream>
+#include "stack.hpp"
+#include "string.hpp"
+
+String inToPost(const String&);
+
+#endif

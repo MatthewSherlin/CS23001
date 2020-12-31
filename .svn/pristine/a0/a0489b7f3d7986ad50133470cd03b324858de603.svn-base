@@ -1,0 +1,1 @@
+The bubble-sort function takes much more time than the quick-sort function. When looking at the bubble-sort function, the function is a bottle neck because of how many calls there are to the vector. The amount of calls to access the vector is what causes the bottle neck in the bubble-sort. The quick-sort function is much quicker than bubble-sort because of this.
